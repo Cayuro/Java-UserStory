@@ -130,8 +130,6 @@ public class Empleado {
      *
      * Precedencia aplicada: paréntesis > multiplicación > suma/resta.
      * También usa módulo (%) para identificar ids pares y sumar bono extra.
-     *
-     * @return salario final mensual calculado.
      */
     public double calcularSalarioFinal() {
         // Pasamos salario anual a mensual para aplicar la fórmula.
@@ -154,10 +152,7 @@ public class Empleado {
 
     /**
       * Evalúa si el empleado cumple la regla de elegibilidad.
-      *
       * Precedencia lógica usada: ! > && > ||
-     *
-     * @return true si cumple la condición completa, false en caso contrario.
      */
     public boolean validarElegibilidad() {
           // Nombres intermedios para que la expresión sea fácil de leer.
@@ -169,17 +164,6 @@ public class Empleado {
 
     @Override
     public String toString() {
-        return "Empleado{" +
-                "nivel=" + nivel +
-                ", edad=" + edad +
-                ", idEmpleado=" + idEmpleado +
-                ", salarioAnual=" + salarioAnual +
-                ", porcentajeBono=" + porcentajeBono +
-                ", puntajeDesempeno=" + puntajeDesempeno +
-                ", idSede=" + idSede +
-                ", categoria=" + categoria +
-                ", activo=" + activo +
-                ", nombreCompleto='" + nombreCompleto + '\'' +
-                '}';
+        return "Empleado{" + "nivel=" + nivel + ", edad=" + edad + ", idEmpleado=" + idEmpleado + ", salarioAnual=" + salarioAnual + ", porcentajeBono=" + porcentajeBono + ", puntajeDesempeno=" + puntajeDesempeno + ", idSede=" + idSede + ", categoria=" + categoria + ", activo=" + activo + ", nombreCompleto='" + nombreCompleto + '\'' + '}';
     }
 }
