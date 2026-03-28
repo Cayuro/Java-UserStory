@@ -3,14 +3,12 @@ package com.corporate.talenthub;
 /**
  * Modelo tradicional estilo Java 8.
  *
- * Esta clase muestra el enfoque clásico: más código repetitivo,
- * pero control total con constructor, getters, setters y toString.
- *
- * Comparación rápida con record:
- * - Clase tradicional: más verbosa, porque hay que escribir mucho boilerplate.
- * - Record: más simple para datos, porque Java genera automáticamente partes comunes.
+ * Aquí se ve el enfoque clásico: más líneas (constructor, getters, setters, toString).
+ * Un record en Java 17 reduce este boilerplate cuando solo queremos representar datos.
  */
 public class Empleado {
+
+    private static final double VALOR_EXTRA_BONO = 75.0;
 
     private byte nivel;
     private short edad;
@@ -18,31 +16,20 @@ public class Empleado {
     private long salarioAnual;
     private float porcentajeBono;
     private double puntajeDesempeno;
+    private int idSede;
     private char categoria;
     private boolean activo;
     private String nombreCompleto;
 
-    /**
-     * Constructor completo del empleado.
-     *
-     * Se incluye el sufijo L en long y f en float para mantener claridad
-     * en el tipo de dato cuando se creen instancias.
-     */
-    public Empleado(byte nivel,
-                    short edad,
-                    int idEmpleado,
-                    long salarioAnual,
-                    float porcentajeBono,
-                    double puntajeDesempeno,
-                    char categoria,
-                    boolean activo,
-                    String nombreCompleto) {
+    /** Constructor completo del empleado. */
+    public Empleado(byte nivel, short edad, int idEmpleado, long salarioAnual, float porcentajeBono, double puntajeDesempeno, char categoria, boolean activo, String nombreCompleto) {
         this.nivel = nivel;
         this.edad = edad;
         this.idEmpleado = idEmpleado;
         this.salarioAnual = salarioAnual;
         this.porcentajeBono = porcentajeBono;
         this.puntajeDesempeno = puntajeDesempeno;
+        this.idSede = 0;
         this.categoria = categoria;
         this.activo = activo;
         this.nombreCompleto = nombreCompleto;
@@ -96,6 +83,14 @@ public class Empleado {
         this.puntajeDesempeno = puntajeDesempeno;
     }
 
+    public int getIdSede() {
+        return idSede;
+    }
+
+    public void setIdSede(int idSede) {
+        this.idSede = idSede;
+    }
+
     public char getCategoria() {
         return categoria;
     }
@@ -121,16 +116,55 @@ public class Empleado {
     }
 
     /**
-     * Ejemplo de Text Block (Java moderno) para imprimir un encabezado simple.
-     *
-     * Aunque esta clase es estilo Java 8, el proyecto usa Java 17/21,
-     * por eso se puede aprovechar esta sintaxis más limpia.
+     * Text Block de Java moderno para mostrar un encabezado del sistema.
      */
     public static void imprimirEncabezadoSistema() {
         String encabezado = """
                 Corporate Talent Hub System
                 """;
         System.out.println(encabezado);
+    }
+
+    /**
+     * Calcula el salario final mensual.
+     *
+     * Precedencia aplicada: paréntesis > multiplicación > suma/resta.
+     * También usa módulo (%) para identificar ids pares y sumar bono extra.
+     *
+     * @return salario final mensual calculado.
+     */
+    public double calcularSalarioFinal() {
+        // Pasamos salario anual a mensual para aplicar la fórmula.
+        double salarioBase = salarioAnual / 12.0;
+
+        // Bono mensual como porcentaje del salario base.
+        double bonoMensual = salarioBase * (porcentajeBono / 100.0);
+
+        // Si el id es par (residuo 0), aplicamos bono extra.
+        if (idEmpleado % 2 == 0) {
+            double valorExtra = VALOR_EXTRA_BONO;
+
+            // Asignación compuesta: equivalente a bonoMensual = bonoMensual + valorExtra
+            bonoMensual += valorExtra;
+        }
+
+        // Fórmula solicitada con la jerarquía de operadores respetada.
+        return (salarioBase + (bonoMensual * 1.10)) - (salarioBase * 0.05);
+    }
+
+    /**
+      * Evalúa si el empleado cumple la regla de elegibilidad.
+      *
+      * Precedencia lógica usada: ! > && > ||
+     *
+     * @return true si cumple la condición completa, false en caso contrario.
+     */
+    public boolean validarElegibilidad() {
+          // Nombres intermedios para que la expresión sea fácil de leer.
+        double puntajeTest = this.puntajeDesempeno;
+        boolean esActivo = this.activo;
+
+        return (puntajeTest > 85 && edad < 30) || (idSede == 1 && !esActivo);
     }
 
     @Override
@@ -142,6 +176,7 @@ public class Empleado {
                 ", salarioAnual=" + salarioAnual +
                 ", porcentajeBono=" + porcentajeBono +
                 ", puntajeDesempeno=" + puntajeDesempeno +
+                ", idSede=" + idSede +
                 ", categoria=" + categoria +
                 ", activo=" + activo +
                 ", nombreCompleto='" + nombreCompleto + '\'' +
