@@ -35,85 +35,35 @@ public class Empleado {
         this.nombreCompleto = nombreCompleto;
     }
 
-    public byte getNivel() {
-        return nivel;
-    }
+    public byte getNivel() { return nivel; }
+    public void setNivel(byte nivel) { this.nivel = nivel; }
 
-    public void setNivel(byte nivel) {
-        this.nivel = nivel;
-    }
+    public short getEdad() { return edad; }
+    public void setEdad(short edad) { this.edad = edad; }
 
-    public short getEdad() {
-        return edad;
-    }
+    public int getIdEmpleado() { return idEmpleado; }
+    public void setIdEmpleado(int idEmpleado) { this.idEmpleado = idEmpleado; }
 
-    public void setEdad(short edad) {
-        this.edad = edad;
-    }
+    public long getSalarioAnual() { return salarioAnual; }
+    public void setSalarioAnual(long salarioAnual) { this.salarioAnual = salarioAnual; }
 
-    public int getIdEmpleado() {
-        return idEmpleado;
-    }
+    public float getPorcentajeBono() { return porcentajeBono; }
+    public void setPorcentajeBono(float porcentajeBono) { this.porcentajeBono = porcentajeBono; }
 
-    public void setIdEmpleado(int idEmpleado) {
-        this.idEmpleado = idEmpleado;
-    }
+    public double getPuntajeDesempeno() { return puntajeDesempeno; }
+    public void setPuntajeDesempeno(double puntajeDesempeno) { this.puntajeDesempeno = puntajeDesempeno; }
 
-    public long getSalarioAnual() {
-        return salarioAnual;
-    }
+    public int getIdSede() { return idSede; }
+    public void setIdSede(int idSede) { this.idSede = idSede; }
 
-    public void setSalarioAnual(long salarioAnual) {
-        this.salarioAnual = salarioAnual;
-    }
+    public char getCategoria() { return categoria; }
+    public void setCategoria(char categoria) { this.categoria = categoria; }
 
-    public float getPorcentajeBono() {
-        return porcentajeBono;
-    }
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 
-    public void setPorcentajeBono(float porcentajeBono) {
-        this.porcentajeBono = porcentajeBono;
-    }
-
-    public double getPuntajeDesempeno() {
-        return puntajeDesempeno;
-    }
-
-    public void setPuntajeDesempeno(double puntajeDesempeno) {
-        this.puntajeDesempeno = puntajeDesempeno;
-    }
-
-    public int getIdSede() {
-        return idSede;
-    }
-
-    public void setIdSede(int idSede) {
-        this.idSede = idSede;
-    }
-
-    public char getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(char categoria) {
-        this.categoria = categoria;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public String getNombreCompleto() {
-        return nombreCompleto;
-    }
-
-    public void setNombreCompleto(String nombreCompleto) {
-        this.nombreCompleto = nombreCompleto;
-    }
+    public String getNombreCompleto() { return nombreCompleto; }
+    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
 
     /**
      * Text Block de Java moderno para mostrar un encabezado del sistema.
@@ -127,43 +77,55 @@ public class Empleado {
 
     /**
      * Calcula el salario final mensual.
-     *
-     * Precedencia aplicada: paréntesis > multiplicación > suma/resta.
-     * También usa módulo (%) para identificar ids pares y sumar bono extra.
      */
     public double calcularSalarioFinal() {
-        // Pasamos salario anual a mensual para aplicar la fórmula.
         double salarioBase = salarioAnual / 12.0;
-
-        // Bono mensual como porcentaje del salario base.
         double bonoMensual = salarioBase * (porcentajeBono / 100.0);
-
-        // Si el id es par (residuo 0), aplicamos bono extra.
         if (idEmpleado % 2 == 0) {
-            double valorExtra = VALOR_EXTRA_BONO;
-
-            // Asignación compuesta: equivalente a bonoMensual = bonoMensual + valorExtra
-            bonoMensual += valorExtra;
+            bonoMensual += VALOR_EXTRA_BONO;
         }
-
-        // Fórmula solicitada con la jerarquía de operadores respetada.
         return (salarioBase + (bonoMensual * 1.10)) - (salarioBase * 0.05);
     }
 
     /**
-      * Evalúa si el empleado cumple la regla de elegibilidad.
-      * Precedencia lógica usada: ! > && > ||
+     * Evalúa si el empleado cumple la regla de elegibilidad.
      */
     public boolean validarElegibilidad() {
-          // Nombres intermedios para que la expresión sea fácil de leer.
         double puntajeTest = this.puntajeDesempeno;
         boolean esActivo = this.activo;
-
         return (puntajeTest > 85 && edad < 30) || (idSede == 1 && !esActivo);
+    }
+
+    /**
+     * Obtiene la categoría salarial usando Switch Expression moderna (Java 17/21).
+     * Compara con el switch clásico de Java 8 que requería break en cada caso.
+     */
+    public String obtenerCategoriaSalarial() {
+        double salarioMensual = salarioAnual / 12.0;
+        // Modern switch with int ranges (Java 17+ multi-const, no preview needed)
+        int salarioMensualInt = (int) salarioMensual;
+        return switch (salarioMensualInt / 1000000) {
+            case 8 -> "Senior Developer";
+            case 4, 5, 6, 7 -> "Middle Developer";
+            case 2, 3 -> "Junior Developer";
+            default -> "Salario fuera de rango registrado";
+        };
     }
 
     @Override
     public String toString() {
-        return "Empleado{" + "nivel=" + nivel + ", edad=" + edad + ", idEmpleado=" + idEmpleado + ", salarioAnual=" + salarioAnual + ", porcentajeBono=" + porcentajeBono + ", puntajeDesempeno=" + puntajeDesempeno + ", idSede=" + idSede + ", categoria=" + categoria + ", activo=" + activo + ", nombreCompleto='" + nombreCompleto + '\'' + '}';
+        return "Empleado{" +
+                "nivel=" + nivel +
+                ", edad=" + edad +
+                ", idEmpleado=" + idEmpleado +
+                ", salarioAnual=" + salarioAnual +
+                ", porcentajeBono=" + porcentajeBono +
+                ", puntajeDesempeno=" + puntajeDesempeno +
+                ", idSede=" + idSede +
+                ", categoria=" + categoria +
+                ", activo=" + activo +
+                ", nombreCompleto='" + nombreCompleto + '\'' +
+                '}';
     }
 }
+
