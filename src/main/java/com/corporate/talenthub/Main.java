@@ -1,5 +1,7 @@
 package com.corporate.talenthub;
 
+import java.util.Scanner;
+
 /**
  * Punto de entrada para ejecutar pruebas básicas del proyecto.
  *
@@ -30,7 +32,7 @@ public class Main {
             // Esta línea provoca NPE porque codigoInterno no apunta a ningún objeto.
             System.out.println("Longitud del código interno: " + codigoInterno.length());
         } catch (NullPointerException npe) {
-            System.out.println("\n[Null Lab]");
+            System.out.println("\\n[Null Lab]");
             System.out.println("Se detectó NullPointerException.");
 
             // Java 8 normalmente daba mensajes poco informativos (ejemplo: "null").
@@ -46,7 +48,7 @@ public class Main {
         Empleado empleadoB = new Empleado( (byte) 2, (short) 27, 1002, 36_000_000L, 12.5f, 88.7, 'A', true, "Ana Torres"
         );
 
-        System.out.println("\n[Comparación de objetos]");
+        System.out.println("\\n[Comparación de objetos]");
 
         // == compara referencias (dirección en heap), no el contenido interno del objeto.
         System.out.println("empleado == empleadoA -> " + (empleado == empleadoA));
@@ -54,5 +56,11 @@ public class Main {
 
         // Explicación: en heap hay dos objetos diferentes para empleado y empleadoB
         // unque tengan los mismos datos. Por eso == devuelve false en ese caso.
+
+        // --- User Story 2: menú interactivo ---
+        Scanner sc = new Scanner(System.in);
+        MenuPrincipal.mostrarMenu(sc);
+        sc.close();
     }
 }
+
