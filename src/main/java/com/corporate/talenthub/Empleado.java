@@ -1,11 +1,6 @@
 package com.corporate.talenthub;
 
-/**
- * Modelo tradicional estilo Java 8.
- *
- * Aquí se ve el enfoque clásico: más líneas (constructor, getters, setters, toString).
- * Un record en Java 17 reduce este boilerplate cuando solo queremos representar datos.
- */
+/** Modelo de empleado en estilo de clase tradicional. */
 public class Empleado {
 
     private static final double VALOR_EXTRA_BONO = 75.0;
@@ -21,7 +16,7 @@ public class Empleado {
     private boolean activo;
     private String nombreCompleto;
 
-    /** Constructor completo del empleado. */
+    /** Crea un empleado con su información laboral y personal. */
     public Empleado(byte nivel, short edad, int idEmpleado, long salarioAnual, float porcentajeBono, double puntajeDesempeno, char categoria, boolean activo, String nombreCompleto) {
         this.nivel = nivel;
         this.edad = edad;
@@ -65,19 +60,15 @@ public class Empleado {
     public String getNombreCompleto() { return nombreCompleto; }
     public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
 
-    /**
-     * Text Block de Java moderno para mostrar un encabezado del sistema.
-     */
+    /** Imprime encabezado del sistema usando Text Block. */
     public static void imprimirEncabezadoSistema() {
-        String encabezado = """
+        var encabezado = """
                 Corporate Talent Hub System
                 """;
         System.out.println(encabezado);
     }
 
-    /**
-     * Calcula el salario final mensual.
-     */
+    /** Calcula el salario mensual final del empleado. */
     public double calcularSalarioFinal() {
         double salarioBase = salarioAnual / 12.0;
         double bonoMensual = salarioBase * (porcentajeBono / 100.0);
@@ -87,23 +78,17 @@ public class Empleado {
         return (salarioBase + (bonoMensual * 1.10)) - (salarioBase * 0.05);
     }
 
-    /**
-     * Evalúa si el empleado cumple la regla de elegibilidad.
-     */
+    /** Evalúa elegibilidad del empleado según reglas de negocio. */
     public boolean validarElegibilidad() {
         double puntajeTest = this.puntajeDesempeno;
         boolean esActivo = this.activo;
         return (puntajeTest > 85 && edad < 30) || (idSede == 1 && !esActivo);
     }
 
-    /**
-     * Obtiene la categoría salarial usando Switch Expression moderna (Java 17/21).
-     * Compara con el switch clásico de Java 8 que requería break en cada caso.
-     */
+    /** Obtiene categoría salarial con switch expression moderna de Java 17/21. */
     public String obtenerCategoriaSalarial() {
-        double salarioMensual = salarioAnual / 12.0;
-        // Modern switch with int ranges (Java 17+ multi-const, no preview needed)
-        int salarioMensualInt = (int) salarioMensual;
+        var salarioMensual = salarioAnual / 12.0;
+        var salarioMensualInt = (int) salarioMensual;
         return switch (salarioMensualInt / 1000000) {
             case 8 -> "Senior Developer";
             case 4, 5, 6, 7 -> "Middle Developer";
@@ -111,6 +96,8 @@ public class Empleado {
             default -> "Salario fuera de rango registrado";
         };
     }
+
+    /* Java 8 depende de case:break y puede caer en fall-through si falta break; Java 17/21 con -> evita ese riesgo por diseño. */
 
     @Override
     public String toString() {

@@ -1,45 +1,30 @@
 package com.corporate.talenthub;
 
-/**
- * Maneja matriz de calificaciones de desempeño por trimestres (Q1, Q2, Q3).
- * Usa array bidimensional double[numEmpleados][3].
- */
+import java.util.List;
+
+/** Gestiona calificaciones trimestrales en matriz bidimensional double[numEmpleados][3]. */
 public class MatrizDesempeno {
 
-    private double[][] calificaciones;
+    private final double[][] calificaciones;
 
-    /**
-     * Constructor inicializa matriz con N empleados y 3 columnas (Q1,Q2,Q3).
-     *
-     * @param numEmpleados Número de empleados.
-     */
+    /** Inicializa la matriz de calificaciones para N empleados y 3 trimestres. */
     public MatrizDesempeno(int numEmpleados) {
-        calificaciones = new double[numEmpleados][3]; // Fila=empleado, columna=trimestre
+        calificaciones = new double[numEmpleados][3];
     }
 
-    /**
-     * Registra calificaciones de 3 trimestres para un empleado.
-     *
-     * @param empleadoIndex Índice del empleado (0-based).
-     * @param q1 Calificación Q1.
-     * @param q2 Calificación Q2.
-     * @param q3 Calificación Q3.
-     */
+    /** Registra las tres calificaciones trimestrales de un empleado. */
     public void registrarCalificacion(int empleadoIndex, double q1, double q2, double q3) {
         calificaciones[empleadoIndex][0] = q1;
         calificaciones[empleadoIndex][1] = q2;
         calificaciones[empleadoIndex][2] = q3;
     }
 
-    /**
-     * Calcula promedios por empleado usando bucles anidados.
-     * @return Array de promedios (un double por empleado).
-     */
+    /** Calcula el promedio de desempeño por empleado usando for anidados. */
     public double[] calcularPromedios() {
         var promedios = new double[calificaciones.length];
-        for (int i = 0; i < calificaciones.length; i++) { // Bucle externo: empleados
+        for (var i = 0; i < calificaciones.length; i++) {
             var suma = 0.0;
-            for (int j = 0; j < calificaciones[i].length; j++) { // Bucle interno: trimestres
+            for (var j = 0; j < calificaciones[i].length; j++) {
                 suma += calificaciones[i][j];
             }
             promedios[i] = suma / 3.0;
@@ -47,36 +32,19 @@ public class MatrizDesempeno {
         return promedios;
     }
 
-    /**
-     * Obtiene puntaje simplificado truncado (no redondeado).
-     *
-     * @param promedio Promedio del empleado.
-     * @return Puntaje int truncado.
-     */
+    /** Convierte promedio double a int truncado para puntaje simplificado. */
     public int obtenerPuntajeSimplificado(double promedio) {
-        // Cast explícito: trunca (floor) decimales, NO redondea.
-        // Ejemplo: 88.9 -> 88 (pierde .9), 88.1 -> 88.
-        int puntaje = (int) promedio;
+        var puntaje = (int) promedio;
         return puntaje;
     }
 
-    /**
-     * Evalúa promoción con operador ternario.
-     *
-     * @param promedio Promedio del empleado.
-     * @return "PROMOVIDO" o "EN SEGUIMIENTO".
-     */
+    /** Evalúa promoción con operador ternario sobre el promedio del empleado. */
     public String evaluarPromocion(double promedio) {
-        // Ternario: condición ? verdadero : falso
         return promedio >= 3.5 ? "PROMOVIDO" : "EN SEGUIMIENTO";
     }
 
-    /**
-     * Imprime reporte formateado de promedios.
-     *
-     * @param promedios Array de promedios por empleado.
-     */
-    public void imprimirReporte(double[] promedios) {
+    /** Imprime reporte de promedios, casting explícito y estado de promoción por empleado. */
+    public void imprimirReporte(double[] promedios, List<Empleado> empleados) {
         var header = """
                 =============================
                  REPORTE DE DESEMPEÑO
@@ -84,12 +52,19 @@ public class MatrizDesempeno {
                 """;
         System.out.println(header);
 
-        for (int i = 0; i < promedios.length; i++) {
+        for (var i = 0; i < promedios.length; i++) {
+            var empleado = empleados.get(i);
             var puntajeSimplificado = obtenerPuntajeSimplificado(promedios[i]);
             var estadoPromocion = evaluarPromocion(promedios[i]);
-            System.out.printf("Empleado %d: Promedio=%.2f, Puntaje=%d, Estado=%s%n",
-                              i, promedios[i], puntajeSimplificado, estadoPromocion);
+            System.out.printf("Empleado %s: Promedio=%.2f, PuntajeSimplificado=%d, Estado=%s%n",
+                    empleado.getNombreCompleto(), promedios[i], puntajeSimplificado, estadoPromocion);
         }
+
+        var notaCasting = """
+                Nota: el casting explícito de double a int trunca decimales,
+                por eso el PuntajeSimplificado pierde precisión frente al promedio real.
+                """;
+        System.out.println(notaCasting);
     }
 }
 
