@@ -1,81 +1,127 @@
 package com.corporate.talenthub;
 
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
+/** Menú principal con flujo dinámico para múltiples empleados. */
 public class MenuPrincipal {
 
-    /**
-     * Muestra el menú principal del sistema.
-     * Utiliza un bucle do-while para mantener el menú activo hasta que el usuario elija salir.
-     *
-     * @param sc Scanner para leer la entrada del usuario.
-     */
+    /** Muestra el menú principal hasta que el usuario elige salir. */
     public static void mostrarMenu(Scanner sc) {
-        var bandera = "";
+        var empleados = new ArrayList<Empleado>();
+        var opcion = "-1";
         do {
-            String menu = """
-                    ===== Menú Principal =====
+            var menu = """
+                    ================================
+                      Corporate Talent Hub
+                    ================================
                     1. Registrar empleado
-                    2. Ver empleados
-                    3. Calcular desempeño
+                    2. Listar empleados
+                    3. Procesar desempeño trimestral
                     0. Salir
-                    ==========================
+                    ================================
                     """;
             System.out.println(menu);
-
             System.out.print("Seleccione una opción: ");
-            bandera = sc.nextLine(); // Leer entrada como String
+            try {
+                opcion = ValidateData.readLineSafe(sc);
+            } catch (InputMismatchException e) {
+                System.out.println("No hay más entrada disponible. Cierre de sesión completado.");
+                break;
+            }
 
-            switch (bandera.trim()) {
+            switch (opcion) {
                 case "1":
-                    System.out.println("Opción 1: Registrar empleado seleccionada.");
-                    // Lógica para registrar empleado
+                    registrarEmpleado(sc, empleados);
                     break;
                 case "2":
-                    System.out.println("Opción 2: Ver empleados seleccionada.");
-                    // Lógica para ver empleados
+                    listarEmpleados(empleados);
                     break;
                 case "3":
-                    System.out.println("Opción 3: Calcular desempeño seleccionada.");
-                    // Lógica para calcular desempeño
+                    procesarDesempeno(sc, empleados);
                     break;
                 case "0":
-                    System.out.println("Saliendo del sistema...");
+                    System.out.println("Cierre de sesión completado.");
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente de nuevo.");
+                    System.out.println("Opción inválida. Elige 0, 1, 2 o 3.");
             }
-        } while (!bandera.trim().equals("0"));
+        } while (!opcion.equals("0"));
     }
 
-    /**
-     * Muestra una demostración de la categoría salarial usando el método obtenerCategoriaSalarial.
-     */
-    private static void mostrarCategoriaDemo() {
-        Empleado empleadoDemo = new Empleado((byte) 2, (short) 25, 12345, 50000L, 10.0f, 90.0, 'A', true, "Demo Empleado");
-        System.out.println("Categoría salarial del empleado demo: " + empleadoDemo.obtenerCategoriaSalarial());
+    /** Registra un empleado validando todos los datos de entrada. */
+    public static void registrarEmpleado(Scanner sc, List<Empleado> empleados) {
+        try {
+            var idEmpleado = ValidateData.validateIdEmpleado(sc, "ID del empleado (entero positivo): ");
+            var nombre = ValidateData.validateNombre(sc, "Nombre completo: ");
+            var nivel = ValidateData.validateNivel(sc, "Nivel (1-10): ");
+            var edad = ValidateData.validateEdad(sc, "Edad (18-65): ");
+            var salarioAnual = ValidateData.validateSalarioAnual(sc, "Salario anual (1 a 999999999): ");
+            var porcentajeBono = ValidateData.validatePorcentajeBono(sc, "Porcentaje de bono (0.0 a 50.0): ");
+            var puntajeBase = ValidateData.validatePuntaje(sc, "Puntaje base (0.0 a 100.0): ");
+            var categoria = ValidateData.validateCategoria(sc, "Categoría (A/B/C): ");
+            var activo = ValidateData.validateActivo(sc, "Estado 1=Activo 2=Inactivo: ");
+
+            var empleado = new Empleado(nivel, edad, idEmpleado, salarioAnual, porcentajeBono, puntajeBase, categoria, activo, nombre);
+            empleados.add(empleado);
+
+            var resumen = """
+                    Empleado registrado correctamente.
+                    Categoría salarial: %s
+                    """;
+            System.out.printf((resumen) + "%n", empleado.obtenerCategoriaSalarial());
+        } catch (InputMismatchException e) {
+            /* Java 17/21 suele entregar mensajes de excepción más claros que Java 8 para diagnosticar errores de entrada. */
+            System.out.println("Entrada inválida: " + e.getMessage());
+        }
     }
 
-    /*
-     * Comentario explicativo sobre switch clásico y moderno:
-     *
-     * En Java 8, el switch clásico requiere break para evitar el "fall-through":
-     * switch (opcion) {
-     *     case 1:
-     *         System.out.println("Caso 1");
-     *         break;
-     *     case 2:
-     *         System.out.println("Caso 2");
-     *         break;
-     *     default:
-     *         System.out.println("Caso por defecto");
-     * }
-     *
-     * En Java 21, el switch moderno con -> elimina el riesgo de "fall-through":
-     * switch (opcion) {
-     *     case 1 -> System.out.println("Caso 1");
-     *     case 2 -> System.out.println("Caso 2");
-     *     default -> System.out.println("Caso por defecto");
-     * }
-     */
+    /** Lista todos los empleados registrados en memoria. */
+    public static void listarEmpleados(List<Empleado> empleados) {
+        if (empleados.isEmpty()) {
+            System.out.println("No hay empleados registrados.");
+            return;
+        }
+        var titulo = """
+                ================================
+                 Empleados Registrados
+                ================================
+                """;
+        System.out.println(titulo);
+        for (var i = 0; i < empleados.size(); i++) {
+            System.out.println("#" + (i + 1) + " " + empleados.get(i));
+        }
+    }
+
+    /** Procesa matriz double[][] de 3 trimestres, calcula promedios y muestra reporte final. */
+    public static void procesarDesempeno(Scanner sc, List<Empleado> empleados) {
+        if (empleados.isEmpty()) {
+            System.out.println("Primero registra al menos un empleado.");
+            return;
+        }
+
+        var matriz = new MatrizDesempeno(empleados.size());
+        for (var i = 0; i < empleados.size(); i++) {
+            var empleado = empleados.get(i);
+            var bloque = """
+                    --------------------------------
+                    Cargar notas de: %s
+                    --------------------------------
+                    """;
+            System.out.printf((bloque) + "%n", empleado.getNombreCompleto());
+            var q1 = ValidateData.validateTrimestre(sc, "Q1 (0.0 a 5.0): ");
+            var q2 = ValidateData.validateTrimestre(sc, "Q2 (0.0 a 5.0): ");
+            var q3 = ValidateData.validateTrimestre(sc, "Q3 (0.0 a 5.0): ");
+            matriz.registrarCalificacion(i, q1, q2, q3);
+            var promedioEscala100 = ((q1 + q2 + q3) / 3.0) * 20.0;
+            empleado.setPuntajeDesempeno(promedioEscala100);
+        }
+
+        var promedios = matriz.calcularPromedios();
+        matriz.imprimirReporte(promedios, empleados);
+    }
+
+    /* En Java 8 el switch clásico puede tener fall-through si falta break; en Java 17/21 la switch expression con -> evita ese riesgo y es más compacta. */
 }
