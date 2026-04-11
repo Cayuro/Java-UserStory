@@ -60,6 +60,27 @@ public class EmpleadoStore {
         return cantidadAntes - empleados.size();
     }
 
+    /** Genera reporte de total de empleados y promedio de salarios anuales. */
+    public String generarReporteNomina() {
+        if (empleados.isEmpty()) {
+            return "No hay empleados registrados para generar reporte.";
+        }
+
+        var sumaSalarios = 0L;
+        for (var empleado : empleados) {
+            sumaSalarios += empleado.getSalarioAnual();
+        }
+        var promedio = (double) sumaSalarios / empleados.size();
+
+        return """
+                ================================
+                 Reporte de Nómina
+                ================================
+                Total de empleados: %d
+                Promedio salario anual: %.2f
+                """.formatted(empleados.size(), promedio);
+    }
+
     /** Indica si el almacenamiento está vacío. */
     public boolean estaVacio() {
         return empleados.isEmpty();

@@ -8,7 +8,7 @@ public class MenuPrincipal {
 
     /** Muestra el menú principal hasta que el usuario elige salir. */
     public static void mostrarMenu(Scanner sc) {
-                var store = new EmpleadoStore();
+    var store = new EmpleadoStore();
         var opcion = "-1";
         do {
             var menu = """
@@ -20,6 +20,7 @@ public class MenuPrincipal {
                     3. Eliminar empleado
                     4. Procesar desempeño trimestral
                     5. Filtrar por salario mínimo
+                    6. Reporte de nómina
                     0. Salir
                     ================================
                     """;
@@ -48,11 +49,14 @@ public class MenuPrincipal {
                 case "5":
                     filtrarPorSalarioMinimo(sc, store);
                     break;
+                case "6":
+                    mostrarReporteNomina(store);
+                    break;
                 case "0":
                     System.out.println("Cierre de sesión completado.");
                     break;
                 default:
-                    System.out.println("Opción inválida. Elige 0, 1, 2, 3, 4 o 5.");
+                    System.out.println("Opción inválida. Elige 0, 1, 2, 3, 4, 5 o 6.");
             }
         } while (!opcion.equals("0"));
     }
@@ -128,6 +132,11 @@ public class MenuPrincipal {
         var salarioMinimo = ValidateData.validateSalarioAnual(sc, "Salario mínimo para conservar empleado: ");
         var removidos = store.filtrarPorSalarioMinimo(salarioMinimo);
         System.out.println("Filtrado aplicado. Empleados removidos: " + removidos);
+    }
+
+    /** Muestra reporte consolidado de nómina. */
+    public static void mostrarReporteNomina(EmpleadoStore store) {
+        System.out.println(store.generarReporteNomina());
     }
 
     /** Procesa matriz double[][] de 3 trimestres, calcula promedios y muestra reporte final. */
