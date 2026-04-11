@@ -35,13 +35,35 @@ public class CatalogosEstaticos {
         return tecnologias.get(tecnologias.size() - 1);
     }
 
-    /** Explica por qué estos catálogos son más seguros que una lista mutable. */
-    public static String explicarInmutabilidad() {
-        return "Las colecciones creadas con List.of() y Map.of() son inmutables, por eso no permiten add ni put y evitan cambios accidentales en datos de referencia.";
+    /** Obtiene la primera tecnología con la forma moderna de Java 21. */
+    public static String obtenerPrimeraTecnologiaModerna() {
+        return TECNOLOGIAS.getFirst();
     }
 
-    /** Explica la forma legacy de tomar extremos de una lista. */
-    public static String explicarAccesoLegacy() {
-        return "En Java 8/11 se usa get(0) y size()-1 para leer primero y ultimo elemento; funciona, pero obliga a manejar indices manualmente.";
+    /** Obtiene la última tecnología con la forma moderna de Java 21. */
+    public static String obtenerUltimaTecnologiaModerna() {
+        return TECNOLOGIAS.getLast();
     }
+
+    /** Devuelve vista reversa de tecnologías usando Java 21. */
+    public static List<String> obtenerTecnologiasEnReversaModerna() {
+        return TECNOLOGIAS.reversed();
+    }
+
+        /** Explica la ventaja de usar List.of() y Map.of() para inmutabilidad. 
+     *      "List.of() y Map.of() crean colecciones inmutables que no pueden ser modificadas 
+     *      después de su creación, no permiten add ni put, lo que previene errores accidentales
+     *       de mutación y mejora la seguridad del código.";
+    */
+
+    /** Explica la forma legacy de tomar extremos de una lista. 
+     *         "En Java 8/11 se usa get(0) y size()-1 para leer primero y ultimo elemento; 
+     *          funciona, pero obliga a manejar indices manualmente.";
+    */
+    
+    /** Explica la mejora de Java 21 en colecciones secuenciadas.
+     *      "En Java 21 getFirst(), getLast() y reversed() expresan la intención directamente, 
+     *      mejoran la legibilidad y reducen errores por manejo manual de índices.";
+     */
+    
 }
