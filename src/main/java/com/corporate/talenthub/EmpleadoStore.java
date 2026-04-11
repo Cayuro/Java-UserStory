@@ -47,6 +47,19 @@ public class EmpleadoStore {
         return true;
     }
 
+    /** Filtra empleados usando removeIf con salario anual mínimo. */
+    public int filtrarPorSalarioMinimo(long salarioMinimo) {
+        var cantidadAntes = empleados.size();
+        empleados.removeIf(empleado -> empleado.getSalarioAnual() < salarioMinimo);
+
+        empleadosPorId.clear();
+        for (var empleado : empleados) {
+            var id = String.valueOf(empleado.getIdEmpleado());
+            empleadosPorId.put(id, empleado);
+        }
+        return cantidadAntes - empleados.size();
+    }
+
     /** Indica si el almacenamiento está vacío. */
     public boolean estaVacio() {
         return empleados.isEmpty();

@@ -1,8 +1,6 @@
 package com.corporate.talenthub;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /** Menú principal con flujo dinámico para múltiples empleados. */
@@ -19,8 +17,9 @@ public class MenuPrincipal {
                     ================================
                     1. Registrar empleado
                     2. Listar empleados
-                                        3. Eliminar empleado
-                                        4. Procesar desempeño trimestral
+                    3. Eliminar empleado
+                    4. Procesar desempeño trimestral
+                    5. Filtrar por salario mínimo
                     0. Salir
                     ================================
                     """;
@@ -46,11 +45,14 @@ public class MenuPrincipal {
                 case "4":
                     procesarDesempeno(sc, store);
                     break;
+                case "5":
+                    filtrarPorSalarioMinimo(sc, store);
+                    break;
                 case "0":
                     System.out.println("Cierre de sesión completado.");
                     break;
                 default:
-                    System.out.println("Opción inválida. Elige 0, 1, 2, 3 o 4.");
+                    System.out.println("Opción inválida. Elige 0, 1, 2, 3, 4 o 5.");
             }
         } while (!opcion.equals("0"));
     }
@@ -115,6 +117,17 @@ public class MenuPrincipal {
         } else {
             System.out.println("No existe un empleado con ese ID.");
         }
+    }
+
+    /** Filtra empleados por salario mínimo usando removeIf en el store. */
+    public static void filtrarPorSalarioMinimo(Scanner sc, EmpleadoStore store) {
+        if (store.estaVacio()) {
+            System.out.println("No hay empleados para filtrar.");
+            return;
+        }
+        var salarioMinimo = ValidateData.validateSalarioAnual(sc, "Salario mínimo para conservar empleado: ");
+        var removidos = store.filtrarPorSalarioMinimo(salarioMinimo);
+        System.out.println("Filtrado aplicado. Empleados removidos: " + removidos);
     }
 
     /** Procesa matriz double[][] de 3 trimestres, calcula promedios y muestra reporte final. */

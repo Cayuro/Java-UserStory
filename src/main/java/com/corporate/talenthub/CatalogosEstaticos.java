@@ -50,20 +50,11 @@ public class CatalogosEstaticos {
         return TECNOLOGIAS.reversed();
     }
 
-        /** Explica la ventaja de usar List.of() y Map.of() para inmutabilidad. 
-     *      "List.of() y Map.of() crean colecciones inmutables que no pueden ser modificadas 
-     *      después de su creación, no permiten add ni put, lo que previene errores accidentales
-     *       de mutación y mejora la seguridad del código.";
-    */
-
-    /** Explica la forma legacy de tomar extremos de una lista. 
-     *         "En Java 8/11 se usa get(0) y size()-1 para leer primero y ultimo elemento; 
-     *          funciona, pero obliga a manejar indices manualmente.";
-    */
-    
-    /** Explica la mejora de Java 21 en colecciones secuenciadas.
-     *      "En Java 21 getFirst(), getLast() y reversed() expresan la intención directamente, 
-     *      mejoran la legibilidad y reducen errores por manejo manual de índices.";
+    /*
+     * List.of() y Map.of() crean colecciones inmutables.
+     * No permiten add() ni put(), así se evitan cambios accidentales en datos de referencia.
+     *
+     * Legacy Java 8/11: get(0) y get(size() - 1) funcionan, pero dependen de índices manuales.
+     * Java 21: getFirst(), getLast() y reversed() hacen el código más legible y menos propenso a errores.
      */
-    
 }
