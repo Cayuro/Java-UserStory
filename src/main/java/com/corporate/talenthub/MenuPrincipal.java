@@ -1,8 +1,6 @@
 package com.corporate.talenthub;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /** Menú principal con flujo dinámico para múltiples empleados. */
@@ -10,7 +8,7 @@ public class MenuPrincipal {
 
     /** Muestra el menú principal hasta que el usuario elige salir. */
     public static void mostrarMenu(Scanner sc) {
-        var empleados = new ArrayList<Empleado>();
+    var store = new EmpleadoStore();
         var opcion = "-1";
         do {
             var menu = """
@@ -19,7 +17,10 @@ public class MenuPrincipal {
                     ================================
                     1. Registrar empleado
                     2. Listar empleados
-                    3. Procesar desempeño trimestral
+                    3. Eliminar empleado
+                    4. Procesar desempeño trimestral
+                    5. Filtrar por salario mínimo
+                    6. Reporte de nómina
                     0. Salir
                     ================================
                     """;
@@ -34,25 +35,34 @@ public class MenuPrincipal {
 
             switch (opcion) {
                 case "1":
-                    registrarEmpleado(sc, empleados);
+                    registrarEmpleado(sc, store);
                     break;
                 case "2":
-                    listarEmpleados(empleados);
+                    listarEmpleados(store);
                     break;
                 case "3":
-                    procesarDesempeno(sc, empleados);
+                    eliminarEmpleado(sc, store);
+                    break;
+                case "4":
+                    procesarDesempeno(sc, store);
+                    break;
+                case "5":
+                    filtrarPorSalarioMinimo(sc, store);
+                    break;
+                case "6":
+                    mostrarReporteNomina(store);
                     break;
                 case "0":
                     System.out.println("Cierre de sesión completado.");
                     break;
                 default:
-                    System.out.println("Opción inválida. Elige 0, 1, 2 o 3.");
+                    System.out.println("Opción inválida. Elige 0, 1, 2, 3, 4, 5 o 6.");
             }
         } while (!opcion.equals("0"));
     }
 
     /** Registra un empleado validando todos los datos de entrada. */
-    public static void registrarEmpleado(Scanner sc, List<Empleado> empleados) {
+    public static void registrarEmpleado(Scanner sc, EmpleadoStore store) {
         try {
             var idEmpleado = ValidateData.validateIdEmpleado(sc, "ID del empleado (entero positivo): ");
             var nombre = ValidateData.validateNombre(sc, "Nombre completo: ");
@@ -65,7 +75,10 @@ public class MenuPrincipal {
             var activo = ValidateData.validateActivo(sc, "Estado 1=Activo 2=Inactivo: ");
 
             var empleado = new Empleado(nivel, edad, idEmpleado, salarioAnual, porcentajeBono, puntajeBase, categoria, activo, nombre);
-            empleados.add(empleado);
+            if (!store.agregarEmpleado(empleado)) {
+                System.out.println("Ya existe un empleado con ese ID.");
+                return;
+            }
 
             var resumen = """
                     Empleado registrado correctamente.
@@ -79,8 +92,8 @@ public class MenuPrincipal {
     }
 
     /** Lista todos los empleados registrados en memoria. */
-    public static void listarEmpleados(List<Empleado> empleados) {
-        if (empleados.isEmpty()) {
+    public static void listarEmpleados(EmpleadoStore store) {
+        if (store.estaVacio()) {
             System.out.println("No hay empleados registrados.");
             return;
         }
@@ -90,13 +103,45 @@ public class MenuPrincipal {
                 ================================
                 """;
         System.out.println(titulo);
+        var empleados = store.listarEmpleados();
         for (var i = 0; i < empleados.size(); i++) {
             System.out.println("#" + (i + 1) + " " + empleados.get(i));
         }
     }
 
+    /** Elimina un empleado por ID usando búsqueda en HashMap. */
+    public static void eliminarEmpleado(Scanner sc, EmpleadoStore store) {
+        if (store.estaVacio()) {
+            System.out.println("No hay empleados para eliminar.");
+            return;
+        }
+        var id = ValidateData.validateIdEmpleado(sc, "ID a eliminar: ");
+        if (store.eliminarEmpleado(String.valueOf(id))) {
+            System.out.println("Empleado eliminado correctamente.");
+        } else {
+            System.out.println("No existe un empleado con ese ID.");
+        }
+    }
+
+    /** Filtra empleados por salario mínimo usando removeIf en el store. */
+    public static void filtrarPorSalarioMinimo(Scanner sc, EmpleadoStore store) {
+        if (store.estaVacio()) {
+            System.out.println("No hay empleados para filtrar.");
+            return;
+        }
+        var salarioMinimo = ValidateData.validateSalarioAnual(sc, "Salario mínimo para conservar empleado: ");
+        var removidos = store.filtrarPorSalarioMinimo(salarioMinimo);
+        System.out.println("Filtrado aplicado. Empleados removidos: " + removidos);
+    }
+
+    /** Muestra reporte consolidado de nómina. */
+    public static void mostrarReporteNomina(EmpleadoStore store) {
+        System.out.println(store.generarReporteNomina());
+    }
+
     /** Procesa matriz double[][] de 3 trimestres, calcula promedios y muestra reporte final. */
-    public static void procesarDesempeno(Scanner sc, List<Empleado> empleados) {
+    public static void procesarDesempeno(Scanner sc, EmpleadoStore store) {
+        var empleados = store.listarEmpleados();
         if (empleados.isEmpty()) {
             System.out.println("Primero registra al menos un empleado.");
             return;
