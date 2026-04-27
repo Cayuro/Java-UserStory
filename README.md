@@ -61,9 +61,28 @@ Main flow in `MenuPrincipal` includes:
 From project root:
 
 ```bash
-javac -d out src/main/java/com/corporate/talenthub/*.java
+javac -d out $(find src/main/java -name "*.java")
 java -cp out com.corporate.talenthub.Main
 ```
+
+## MVC + JDBC Version (Refactor)
+New packages were added with clean separation using MVC:
+- `com.riwi.talent.model`
+- `com.riwi.talent.controller`
+- `com.riwi.talent.view`
+- `com.riwi.talent.util`
+
+Run the JDBC-based version:
+
+```bash
+javac -d out $(find src/main/java -name "*.java")
+DB_URL=jdbc:postgresql://localhost:5432/talenthub \
+DB_USER=postgres \
+DB_PASSWORD=postgres \
+java -cp out com.riwi.talent.Main
+```
+
+If environment variables are not configured, default values are used from `DatabaseConnection`.
 
 ## Java Version Requirement
 This code uses Java 21 APIs (`getFirst`, `getLast`, `reversed`), so run with JDK 21.
